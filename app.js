@@ -51,3 +51,25 @@ app.get('/callback', async (req, res) => {
     }
   });
   
+// New route to fetch recently played tracks
+app.get('/recent-tracks', async (req, res) => {
+    try {
+      const data = await spotifyApi.getMyRecentlyPlayedTracks({ limit: 10 });
+      const tracks = data.body.items.map(item => ({
+        trackName: item.track.name,
+        artistName: item.track.artists.map(artist => artist.name).join(', '),
+        albumName: item.track.album.name,
+        playedAt: item.played_at
+      }));
+  
+      res.json(tracks);
+    } catch (err) {
+      console.error('Error fetching recently played tracks:', err);
+      res.status(500).send('Failed to fetch recently played tracks.');
+    }
+  });
+  
+  // Start server
+  app.listen(port, () => {
+    console.log(`Server running on http://localhost:${port}`);
+  });
