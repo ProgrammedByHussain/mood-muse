@@ -44,7 +44,11 @@ app.get('/callback', async (req, res) => {
       spotifyApi.setAccessToken(accessToken);
       spotifyApi.setRefreshToken(refreshToken);
   
-      res.send('Logged in! You can now use the app.');
+      res.send(`
+      <h1>Logged in!</h1>
+      <p>You can now use the app.</p>
+      <p>Check your <a href="/recent-tracks">Recently Played Tracks</a>.</p>
+      `);
     } catch (err) {
       console.error('Error in callback:', err);
       res.send('Something went wrong!');
@@ -69,7 +73,7 @@ app.get('/recent-tracks', async (req, res) => {
     }
   });
   
-  // Start server
-  app.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}`);
-  });
+//   // Start server
+//   app.listen(port, () => {
+//     console.log(`Server running on http://localhost:${port}`);
+//   });
