@@ -25,7 +25,7 @@ app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
 
-const scopes = ['user-read-private', 'user-read-email', 'user-top-read'];
+const scopes = ['user-read-private', 'user-read-email', 'user-read-recently-played'];
 
 app.get('/login', (req, res) => {
   const authorizeURL = spotifyApi.createAuthorizeURL(scopes);
@@ -42,6 +42,7 @@ app.get('/callback', async (req, res) => {
   
       // Save the access token and refresh token
       spotifyApi.setAccessToken(accessToken);
+      console.log('Access Token:', accessToken);
       spotifyApi.setRefreshToken(refreshToken);
   
       res.send(`
