@@ -56,23 +56,49 @@ app.get('/callback', async (req, res) => {
     }
   });
   
-// New route to fetch recently played tracks
+// New route to fetch recently played tracks that are all different
 app.get('/recent-tracks', async (req, res) => {
-    try {
-      const data = await spotifyApi.getMyRecentlyPlayedTracks({ limit: 10 });
-      const tracks = data.body.items.map(item => ({
-        trackName: item.track.name,
-        artistName: item.track.artists.map(artist => artist.name).join(', '),
-        albumName: item.track.album.name,
-        playedAt: item.played_at
-      }));
+    const uniqueTracks = new Map(); // map to store unique ID
+    const limit = 100;
+    let offset = 0;
+    const requiredUniqueCount = 50; //min number of unique tracks
+    let fetchMore = true;
   
-      res.json(tracks);
+    try {
+      while (uniqueTracks.size < requiredUniqueCount && fetchMore) {
+        const data = await spotifyApi.getMyRecentlyPlayedTracks({
+          limit: limit,
+          offset: offset,
+        });
+  
+        const tracks = data.body.items;
+  
+        // Add only unique tracks (based on track ID) to the Map
+        tracks.forEach(item => {
+          const trackId = item.track.id;
+          if (!uniqueTracks.has(trackId)) {
+            uniqueTracks.set(trackId, {
+              trackName: item.track.name,
+              artistName: item.track.artists.map(artist => artist.name).join(', '),
+              albumName: item.track.album.name,
+              playedAt: item.played_at
+            });
+          }
+        });
+  
+        offset += limit;
+  
+        fetchMore = tracks.length === limit;
+      }
+  
+      // Convert the Map values to an array and send only the first X unique tracks
+      res.json(Array.from(uniqueTracks.values()).slice(0, requiredUniqueCount));
     } catch (err) {
       console.error('Error fetching recently played tracks:', err);
       res.status(500).send('Failed to fetch recently played tracks.');
     }
   });
+  
   
 //   // Start server
 //   app.listen(port, () => {
