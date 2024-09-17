@@ -59,9 +59,9 @@ app.get('/callback', async (req, res) => {
 // New route to fetch recently played tracks that are all different
 app.get('/recent-tracks', async (req, res) => {
     const uniqueTracks = new Map(); // map to store unique ID
-    const limit = 100;
+    const limit = 50;
     let offset = 0;
-    const requiredUniqueCount = 50; //min number of unique tracks
+    const requiredUniqueCount = 30; //min number of unique tracks
     let fetchMore = true;
   
     try {
@@ -91,17 +91,38 @@ app.get('/recent-tracks', async (req, res) => {
         fetchMore = tracks.length === limit;
       }
   
-      // Convert the Map values to an array and send only the first X unique tracks
-      res.json(Array.from(uniqueTracks.values()).slice(0, requiredUniqueCount));
+      // Extract the track IDs to fetch audio features
+      const trackIds = Array.from(uniqueTracks.values()).map(track => track.trackId);
+
+      // Fetch audio features for the unique tracks
+      const audioFeaturesData = await spotifyApi.getAudioFeaturesForTracks(trackIds);
+      const trackFeatures = audioFeaturesData.body.audio_features.map(feature => {
+          return {
+              id: feature.id,
+              danceability: feature.danceability,
+              energy: feature.energy,
+              valence: feature.valence,
+              tempo: feature.tempo,
+              acousticness: feature.acousticness,
+              instrumentalness: feature.instrumentalness,
+              liveness: feature.liveness,
+              loudness: feature.loudness,
+              speechiness: feature.speechiness,
+          };
+      });
+
+      // Attach the audio features to the tracks
+      const tracksWithFeatures = Array.from(uniqueTracks.values()).map(track => {
+          const features = trackFeatures.find(f => f.id === track.trackId);
+          return {
+              ...track,
+              audioFeatures: features
+          };
+      });
     } catch (err) {
       console.error('Error fetching recently played tracks:', err);
       res.status(500).send('Failed to fetch recently played tracks.');
     }
   });
 
-//testing commit contribution
-  
-//   // Start server
-//   app.listen(port, () => {
-//     console.log(`Server running on http://localhost:${port}`);
-//   });
+
