@@ -80,3 +80,21 @@ exports.getRecentTracks = async () => {
 
     return tracksWithFeatures; // Return the enriched tracks
 };
+
+const { exec } = require('child_process');
+
+function scrapeLyrics(trackId, trackName, artistName, geniusUrl) {
+    // Call the Python script and pass the track details
+    const command = `python3 path/to/your/python_script.py "${trackId}" "${trackName}" "${artistName}" "${geniusUrl}"`;
+    exec(command, (error, stdout, stderr) => {
+        if (error) {
+            console.error(`Error executing Python script: ${error.message}`);
+            return;
+        }
+        if (stderr) {
+            console.error(`Python script stderr: ${stderr}`);
+            return;
+        }
+        console.log(`Python script output: ${stdout}`);
+    });
+}
