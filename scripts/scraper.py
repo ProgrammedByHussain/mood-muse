@@ -1,11 +1,20 @@
 import requests
 from bs4 import BeautifulSoup
-from pymongo import MongoClient
 
-# Connect to MongoDB
-client = MongoClient("mongodb://localhost:27017/") 
-db = client['mood_muse']  # Database name
-lyrics_collection = db['lyrics']  # Collection name
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
+
+uri = "mongodb+srv://moodmuse:<db_password>@moodmuse.uc9wd.mongodb.net/?retryWrites=true&w=majority&appName=moodmuse"
+
+# Create a new client and connect to the server
+client = MongoClient(uri, server_api=ServerApi('1'))
+
+# Send a ping to confirm a successful connection
+try:
+    client.admin.command('ping')
+    print("Pinged your deployment. You successfully connected to MongoDB!")
+except Exception as e:
+    print(e)
 
 def get_lyrics(genius_url):
     try:
