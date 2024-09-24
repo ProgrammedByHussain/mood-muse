@@ -54,9 +54,13 @@ def store_lyrics(track_id, track_name, artist_name, genius_url):
     else:
         print(f"Failed to extract lyrics for '{track_name}' by {artist_name}.")
 
-track_id = "real-track-id-from-spotify"
-track_name = "real-track-name-from-spotify"
-artist_name = "real-artist-name-from-spotify"
-genius_url = "https://genius.com/Song-title-lyrics"
+if __name__ == "__main__":
+    if len(sys.argv) == 5:
+        track_id = sys.argv[1]
+        track_name = sys.argv[2]
+        artist_name = sys.argv[3]
+        genius_url = sys.argv[4]
+        store_lyrics(track_id, track_name, artist_name, genius_url)
+    else:
+        print("Invalid arguments. Usage: python3 lyrics_scraper.py <track_id> <track_name> <artist_name> <genius_url>")
 
-store_lyrics(track_id, track_name, artist_name, genius_url)
