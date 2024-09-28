@@ -1,4 +1,5 @@
 const SpotifyWebApi = require('spotify-web-api-node');
+const lyricsService = require('./lyricsService');  // Import lyrics service
 
 const spotifyApi = new SpotifyWebApi({
     clientId: process.env.SPOTIFY_CLIENT_ID,
@@ -81,20 +82,19 @@ exports.getRecentTracks = async () => {
     return tracksWithFeatures; // Return the enriched tracks
 };
 
-const { exec } = require('child_process');
-
-function scrapeLyrics(trackId, trackName, artistName, geniusUrl) {
-    // Call the Python script and pass the track details
-    const command = `python3 path/to/your/python_script.py "${trackId}" "${trackName}" "${artistName}" "${geniusUrl}"`;
-    exec(command, (error, stdout, stderr) => {
-        if (error) {
-            console.error(`Error executing Python script: ${error.message}`);
-            return;
+async function fetchLyricsForTracks(tracks) {
+    for (const track of tracks) {
+        // Get the lyrics URL from the lyrics service
+        const lyricsUrl = await lyricsService.getLyrics(track.trackName, track.artistName);
+        if (lyricsUrl) {
+            // Call the Python scraper via the lyrics service
+            lyricsService.getLyricsFromPython(lyricsUrl, (lyrics) => {
+                if (lyrics) {
+                    console.log(`Lyrics for ${track.trackName}:`, lyrics);
+                } else {
+                    console.log(`Failed to retrieve lyrics for ${track.trackName}`);
+                }
+            });
         }
-        if (stderr) {
-            console.error(`Python script stderr: ${stderr}`);
-            return;
-        }
-        console.log(`Python script output: ${stdout}`);
-    });
+    }
 }

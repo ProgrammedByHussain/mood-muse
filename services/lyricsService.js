@@ -35,7 +35,7 @@ module.exports = { getLyrics };
 const { exec } = require('child_process');
 
 function getLyricsFromPython(geniusUrl, callback) {
-    exec(`python3 scrape_lyrics.py ${geniusUrl}`, (error, stdout, stderr) => {
+    exec(`python3 scraper.py ${geniusUrl}`, (error, stdout, stderr) => {
         if (error) {
             console.error(`Error executing Python script: ${error}`);
             callback(null);

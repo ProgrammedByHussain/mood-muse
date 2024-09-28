@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 
-uri = "mongodb+srv://moodmuse:<db_password>@moodmuse.uc9wd.mongodb.net/?retryWrites=true&w=majority&appName=moodmuse"
+uri = "mongodb+srv://moodmuse:<1KAAbi3SEB0Oaho7>@moodmuse.uc9wd.mongodb.net/?retryWrites=true&w=majority&appName=moodmuse"
 
 # Create a new client and connect to the server
 client = MongoClient(uri, server_api=ServerApi('1'))
