@@ -87,14 +87,9 @@ async function fetchLyricsForTracks(tracks) {
         // Get the lyrics URL from the lyrics service
         const lyricsUrl = await lyricsService.getLyrics(track.trackName, track.artistName);
         if (lyricsUrl) {
-            // Call the Python scraper via the lyrics service
-            lyricsService.getLyricsFromPython(lyricsUrl, (lyrics) => {
-                if (lyrics) {
-                    console.log(`Lyrics for ${track.trackName}:`, lyrics);
-                } else {
-                    console.log(`Failed to retrieve lyrics for ${track.trackName}`);
-                }
-            });
+            // Call the Python scraper to store lyrics in MongoDB
+            lyricsService.getLyricsFromPython(track.trackId, track.trackName, track.artistName, lyricsUrl);
         }
     }
 }
+
