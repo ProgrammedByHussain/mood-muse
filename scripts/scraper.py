@@ -15,7 +15,7 @@ url = os.getenv('IBM_URL')
 
 authenticator = IAMAuthenticator(api_key)
 nlu = NaturalLanguageUnderstandingV1(
-    version='2023-10-03',  # Change to your Watson NLU version
+    version='2023-10-03',
     authenticator=authenticator
 )
 nlu.set_service_url(url)

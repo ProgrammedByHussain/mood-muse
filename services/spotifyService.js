@@ -25,9 +25,9 @@ exports.setRefreshToken = (token) => spotifyApi.setRefreshToken(token);
 
 exports.getRecentTracks = async () => {
     const uniqueTracks = new Map(); 
-    const limit = 50;
+    const limit = 30;
     let offset = 0;
-    const requiredUniqueCount = 30;
+    const requiredUniqueCount = 10;
     let fetchMore = true;
 
     while (uniqueTracks.size < requiredUniqueCount && fetchMore) {
@@ -87,7 +87,7 @@ async function fetchLyricsForTracks(tracks) {
         // Get the lyrics URL from the lyrics service
         const lyricsUrl = await lyricsService.getLyrics(track.trackName, track.artistName);
         if (lyricsUrl) {
-            // Call the Python scraper to store lyrics in MongoDB
+            // Call the Python scraper to store lyrics
             lyricsService.getLyricsFromPython(track.trackId, track.trackName, track.artistName, lyricsUrl);
         }
     }

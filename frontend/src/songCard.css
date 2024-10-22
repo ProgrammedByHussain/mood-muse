@@ -1,0 +1,30 @@
+.song-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 16px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  max-width: 300px;
+  margin: 16px;
+}
+
+.album-art {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.song-info {
+  text-align: center;
+  margin-top: 16px;
+}
+
+.lyrics {
+  font-size: 14px;
+  color: #666;
+  max-height: 100px;
+  overflow-y: auto;
+}
